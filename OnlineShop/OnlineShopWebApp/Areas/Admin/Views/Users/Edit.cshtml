@@ -1,0 +1,47 @@
+﻿@model UserViewModel
+
+<div class="col-4">
+    <div class="justify-content-center">
+        <h3>Данные пользователя @Model.Login </h3>
+    </div>
+    <form class="row-4" method="post">
+        <div class="validation" asp-validation-summary="All">   </div>
+        <div class="mb-3">
+            <div>
+                <input type="hidden" asp-for="Login" value="@Model.Login" />
+            </div>
+        </div>
+        <div class="mb-3">
+            <div>
+                <input type="hidden" asp-for="RegistrationDate" value="@Model.RegistrationDate" />
+            </div>
+        </div>
+        <div class="mb-3">
+            <div>
+                <input type="hidden" asp-for="Id" value="@Model.Id" />
+            </div>
+        </div>
+        <div class="mb-3">
+            <div>
+                <input type="hidden" asp-for="Password" value="@Model.Password" />
+            </div>
+        </div>
+        <div class="mb-3">
+            <div>
+                <label asp-for="Name"> Имя </label><br />
+                <input type="text" asp-for="Name" class="form-control" value="@Model.Name" />
+                <span asp-validation-for="Name" style="color:red" />
+            </div>
+        </div>
+        <div class="mb-3">
+            <div>
+                <label asp-for="Phone">Телефон</label><br />
+                <input type="text" asp-for="Phone" class="form-control" value="@Model.Phone" />
+                <span asp-validation-for="Phone" style="color:red" />
+            </div>
+        </div>
+        <div class="mb-3">
+            <button type="submit" class="btn btn-primary" asp-controller="Users" asp-action="Edit"> Подтвердить </button>
+        </div>
+    </form>
+</div>

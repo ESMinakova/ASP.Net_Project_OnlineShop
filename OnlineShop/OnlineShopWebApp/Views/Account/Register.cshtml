@@ -1,0 +1,51 @@
+﻿@model UserRegisterInfo
+
+<div class="col-4">
+    <div class="justify-content-center">
+        <h3>Регистрация</h3>
+    </div>
+    <form class="row-4" method="post">
+        <div class="validation" asp-validation-summary="All">   </div>
+        <div><input type="hidden" name="returnUrl" value="@Model.ReturnUrl" /> </div>
+        <div class="mb-3">
+            <div>
+                <label asp-for="Login">Логин</label><br />
+                <input type="email" asp-for="Login" class="form-control" placeholder="Email" />
+                <span asp-validation-for="Login" style="color:red" />
+            </div>
+        </div>
+        <div class="mb-3">
+            <div>
+                <label asp-for="Password">Пароль</label><br />
+                <input type="password" asp-for="Password" class="form-control" placeholder="Пароль" />
+                <span asp-validation-for="Password" style="color:red" />
+            </div>
+        </div>
+        <div class="mb-3">
+            <div>
+                <label asp-for="ConfirmPassword">Подвердите пароль</label><br />
+                <input type="password" asp-for="ConfirmPassword" class="form-control" placeholder="Подвердите пароль" />
+                <span asp-validation-for="ConfirmPassword" style="color:red" />
+            </div>
+        </div>
+        <div class="mb-3">
+            <div>
+                <label asp-for="Name">Введите имя</label><br />
+                <input type="text" asp-for="Name" class="form-control" placeholder="Имя" />
+                <span asp-validation-for="Name" style="color:red" />
+            </div>
+        </div>
+        <div class="mb-3">
+            <div>
+                <label asp-for="Phone">Введите телефон</label><br />
+                <input type="tel" asp-for="Phone" class="form-control" placeholder="Телефон в формате +7ХХХХХХХХХХ" />
+                <span asp-validation-for="Phone" style="color:red" />
+            </div>
+        </div>
+        <div class="mb-3">
+        </div>
+        <div class="mb-3">
+            <button type="submit" class="btn btn-primary" asp-area="" asp-controller="Account" asp-action="Register">Зарегистрироваться</button>
+        </div>
+    </form>
+</div>

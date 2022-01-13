@@ -1,0 +1,21 @@
+﻿@model int
+    <div class="wrapper">
+        <div class="icon">
+            <div class="null">                
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    @if (Model > 0)
+                    {
+                        @Model <a asp-area="" asp-controller="Cart" asp-action="Index">
+                            <i class="bi bi-basket" role="button" style="font-size: 2rem; color: orangered;"></i>
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-area="" asp-controller="Cart" asp-action="Index">
+                            <i class="bi bi-basket" role="button" style="font-size: 2rem; color: orangered;"></i>
+                        </a>
+                    }
+                </div>            
+            </div>
+        </div>
+    </div>

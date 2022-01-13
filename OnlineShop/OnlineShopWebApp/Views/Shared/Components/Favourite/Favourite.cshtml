@@ -1,0 +1,10 @@
+﻿@model ValueTuple<ProductViewModel, bool>
+
+@if (Model.Item2 == true)
+{
+    <a asp-area="" asp-controller="Favourite" asp-action="AddOrDelete" asp-route-productId="@Model.Item1.Id"><i class="bi bi-heart-fill" role="button" style="font-size: 1.5rem; color: orangered;"></i></a>
+}
+else
+{
+    <a asp-area="" asp-controller="Favourite" asp-action="AddOrDelete" asp-route-productId="@Model.Item1.Id"><i class="bi bi-heart" role="button" style="font-size: 1.5rem; color: orangered;"></i></a>
+} 

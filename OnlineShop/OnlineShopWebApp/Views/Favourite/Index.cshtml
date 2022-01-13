@@ -1,0 +1,41 @@
+﻿@model FavouriteViewModel
+@{
+    ViewData["Title"] = "Favourites page";
+}
+
+@if (Model == null || Model.FavouriteProducts.Count == 0)
+{
+    <div class="row">
+        <div class="col-8">
+            <h2>Список избранных товаров пуст! Добавьте в него что-нибудь.</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-8">
+            <br><br><br><a class="btn btn-info" asp-area="" asp-controller="home" , asp-action="index" role="button">Вернуться в каталог</a>
+        </div>
+    </div>
+}
+else
+{
+    <div class="row">
+        @foreach (var product in Model.FavouriteProducts)
+        {
+        <div class="col-4 card">
+            <a class="btn btn-outline-warning" role="button" asp-area="" asp-controller="Favourite" asp-action="Delete" asp-route-productId="@product.Id">Убрать из избранного</a>
+            <a href="product/index?productId=@product.Id"><img class="card-img-top" src="@product.ImagePaths" )></a>
+            <div class="card-body">
+                <h5><a style="color: hotpink" href="product/index?productId=@product.Id">@product.Name</a></h5>
+                @product.Cost руб
+                <br><a button class="btn btn-success" role="button" asp-area="" asp-controller="Cart" asp-action="Add" asp-route-productId="@product.Id">Добавить в корзину</a>
+                <a class="btn btn-success" role="button" asp-area="" asp-controller="Comparison" asp-action="Add" asp-route-productId="@product.Id">Сравнить</a>
+            </div>
+        </div>
+        }
+    </div>
+    <div class="row">
+        <div class="col-8">
+            <br><br><br><a class="btn btn-info" asp-area="" asp-controller="home" , asp-action="index" role="button">Вернуться в каталог</a>
+        </div>
+    </div>
+}

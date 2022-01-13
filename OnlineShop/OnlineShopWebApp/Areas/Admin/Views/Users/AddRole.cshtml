@@ -1,0 +1,21 @@
+﻿@model ValueTuple<UserViewModel, List<string>, List<RoleViewModel>>
+<div class="row-4">
+    <h4>Выберите роль для пользователя @Model.Item1.Login</h4>
+    <br>
+    <form method="post">
+        <div class="form-row align-items-center">
+            <div class="col-3">
+                @foreach (var role in Model.Item3)
+                {
+                    <input type="checkbox" name="roles" value="@role.Name" 
+                       @(Model.Item2.Contains(role.Name) ? "checked=\" checked\"" : "" ) /> @role.Name <br />
+                }
+                <br>
+                <br>
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-primary" asp-area="Admin" asp-controller="Users" asp-action="AddRole" asp-route-login="@Model.Item1.Login"> Подтвердить </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

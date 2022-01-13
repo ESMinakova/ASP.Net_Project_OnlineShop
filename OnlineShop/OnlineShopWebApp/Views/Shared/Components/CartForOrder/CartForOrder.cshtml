@@ -1,0 +1,31 @@
+﻿@model CartViewModel
+
+
+<div class="row">
+    <div class="col-6 text-center">
+        <h2> Ваш заказ: </h2>
+        <br><table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Название позиции</th>
+                    <th scope="col">Количество товара в позиции</th>
+                    <th scope="col">Стоимость позиции </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var product in Model.Items)
+                {
+                    <tr>
+                        <td scope="row">@product.Product.Name</td>
+                        <td> @product.Amount </td>
+                        <td>@product.Cost руб.</td>
+                    </tr>
+                }
+                <tr>
+                    <td colspan="2"><b>Итоговая сумма</b></td>
+                    <td colspan="2"><b>@Model.TotalCost руб.</b></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

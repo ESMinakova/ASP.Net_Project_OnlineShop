@@ -1,0 +1,84 @@
+﻿@model UserDeliveryInfoViewModel
+@{
+    ViewData["Title"] = "Order";
+}
+
+
+@await Component.InvokeAsync("CartForOrder")
+<br>
+<br>
+<br><div class="row">
+    <div class="col-9">
+        <h5> Введите, пожалуйста, необходимые данные для оформления заказа: </h5>
+    </div>
+    <br>
+    <div class="col-9">
+         <div class="validation" asp-validation-summary="All">   </div>
+         <form class="row g-3" method="post">
+
+             <div class="col-md-5">
+                 <input type="text" asp-for="Name" class="form-control" placeholder="Ваше имя" />
+                 <span asp-validation-for="Name" style="color:red" />
+             </div>
+             <div class="col-md-5">
+                 <input type="tel" asp-for="Phone" class="form-control" placeholder="Телефон в формате +7ХХХХХХХХХХ" />
+                 <span asp-validation-for="Phone" style="color:red" />
+             </div>
+             <br><br><br><div class="col-9">
+                 <h6> Адрес доставки: </h6>
+             </div>
+             <br><div class="col-md-6">
+                 <label for="inputCity" class="form-label">Улица</label>
+                 <input type="text" class="form-control" name="street" placeholder="Обручевых">
+             </div>
+             <div class="col-md-4">
+                 <label for="inputState" class="form-label">Дом</label>
+                 <input type="text" class="form-control" name="houseNumber" placeholder="5А">
+             </div>
+             <div class="col-md-2">
+                 <label for="inputZip" class="form-label">Квартира</label>
+                 <input type="text" class="form-control" name="flatNumber" placeholder="ХХ">
+             </div>
+             <br>
+             <div class="col-9">
+                 <div class="form-check">
+                     <input class="form-check-input" type="radio" asp-for="Pay" value="CardPay" />
+                     <label class="form-check-label" asp-for="Pay">Оплата картой</label><br />
+                     <span asp-validation-for="Pay" style="color:red" />
+                 </div>
+                 <div class="form-check">
+                     <input class="form-check-input" type="radio" asp-for="Pay" value="CashPay" />
+                     <label class="form-check-label" asp-for="Pay">Оплата наличными</label><br />
+                     <span asp-validation-for="Pay" style="color:red" />
+                 </div>
+             </div>
+             <br><br><br>
+             <div class="col-md-8">
+                 <textarea class="form-control" name="comments" rows="3" placeholder="Комментарии"></textarea>
+             </div>
+             <br><br><br><br>
+             <div class="col-9">
+                 <div class="form-check">
+                     <input class="form-check-input" type="checkbox" asp-for="IsAgree" value="true" required>
+                     <label class="form-check-label" for="gridCheck">
+                         Я согласен на обработку персональных данных
+                     </label>
+                     <span asp-validation-for="IsAgree" style="color:red" />
+                 </div>
+             </div>
+             <br><br>
+             <div class="col-9">
+                 <button type="submit" class="btn btn-primary" asp-area="" asp-controller="Order" asp-action="SuccessfulOrder">Оформить заказ</button>
+             </div>
+         </form>
+</div>
+</div>
+
+<div class="row">
+    <div class="col-9">
+        <br><br><br><a class="btn btn-info" asp-area="" asp-controller="home" , asp-action="index" role="button">Вернуться к покупкам</a>
+    </div>
+</div>
+
+
+

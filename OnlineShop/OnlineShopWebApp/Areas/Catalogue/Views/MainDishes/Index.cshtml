@@ -1,0 +1,22 @@
+﻿@model List<ProductViewModel>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@await Html.PartialAsync("SearchBar")
+<div class="row">
+    @await Html.PartialAsync("LeftProductMenu")
+    <div class="col-9">
+        <div class="row">
+            @foreach (var product in Model)
+            {
+                @await Html.PartialAsync("ProductCard", product)
+            }
+        </div>
+    </div>
+</div>
+
+
+
+
+

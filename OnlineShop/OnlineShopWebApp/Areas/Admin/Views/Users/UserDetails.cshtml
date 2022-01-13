@@ -1,0 +1,59 @@
+﻿@model UserViewModel
+
+<div class="row">
+    <div class="col-12">
+        <table class="table">
+            <tbody>
+                <tr>
+                    <td scope="col">
+                        @await Component.InvokeAsync("AdminsMenu")
+                    </td>
+                    <td scope="col">
+                        <div class="col-8 card">
+                            <table class="table">
+                                <thead>
+                                    <tr><th colspan="2">Пользователь @Model.Login</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td> email (логин) </td>
+                                        <td> @Model.Login </td>
+                                    </tr>
+                                    <tr>
+                                        <td> Имя </td>
+                                        <td> @Model.Name </td>
+                                    </tr>
+                                    <tr>
+                                        <td> Телефон </td>
+                                        <td> @Model.Phone </td>
+                                    </tr>
+                                    <tr>
+                                        <td> Дата и время регистрации </td>
+                                        <td> @Model.RegistrationDate </td>
+                                    </tr>
+                                    <tr>
+                                        <td>  </td>
+                                        <td>
+                                            <div class="dropdown open">
+                                            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Действия</button>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                                <a class="dropdown-item" asp-area="Admin" asp-controller="Users" asp-action="ChangePassword" , asp-route-login="@Model.Login">Смена пароля</a>
+                                                <a class="dropdown-item" asp-area="Admin" asp-controller="Users" asp-action="Edit" asp-route-login="@Model.Login">Редактирование данных</a>                                                
+                                                <a class="dropdown-item" asp-area="Admin" asp-controller="Users" asp-action="AddRole" asp-route-login="@Model.Login">Права доступа</a>
+                                                <a class="dropdown-item" asp-area="Admin" asp-controller="Users" asp-action="Delete" asp-route-login="@Model.Login">Удалить пользователя</a>
+                                            </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>                            
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+

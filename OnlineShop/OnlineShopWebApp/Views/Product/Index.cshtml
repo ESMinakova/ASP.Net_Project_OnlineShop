@@ -1,0 +1,31 @@
+﻿@model ProductViewModel
+@{
+    ViewData["Title"] = "Product Page";
+}
+
+<div class="row">
+    <div class="col-8 card">
+        <img class="card-img-top" src=@Model.ImagePath alt="Изображение блюда">
+
+
+        <div class="card-body">
+            @if (Model.ImagePaths.Count > 1)
+            {
+                @for (int i = 1; i < Model.ImagePaths.Count; i++)
+                {
+                    <img class="card-img " src=@Model.ImagePaths[i] alt="Изображение блюда" style="width:150px;height:100px;">
+                }
+            }
+            <h5>@Model.Name</h5>
+            <br>@Model.Cost руб
+            <p>@Model.Description</p>
+            <p>
+                <a class="btn btn-danger" role="button" asp-area="" asp-controller="Cart" asp-action="Add" asp-route-productId="@Model.Id">Добавить в корзину</a> &nbsp; &nbsp;
+                <a class="btn btn-danger" role="button" asp-area="" asp-controller="Comparison" asp-action="Add" asp-route-productId="@Model.Id">Сравнить</a> &nbsp; &nbsp;
+                @await Component.InvokeAsync("Favourite", Model.Id)
+            </p>
+
+            <p><a class="btn btn-info" asp-area="" asp-controller="home" , asp-action="index" role="button">Продолжить покупки</a></p>
+        </div>
+    </div>    
+</div>

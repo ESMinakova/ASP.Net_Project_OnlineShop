@@ -1,0 +1,31 @@
+﻿@model List<ProductViewModel>
+
+@{
+    ViewData["Title"] = "Searching Results";
+}
+
+@if (Model.Count == 0)
+{
+    <h3> Извините, по Вашему запросу ничего не найдено</h3>
+}
+else
+{
+    <div class="row">
+        @foreach (var product in Model)
+        {
+            <div class="col-4 card">
+                <a href="/product/index?productId=@product.Id"><img class="card-img-top" src="@product.ImagePaths" )></a>
+                <div class="card-body">
+                    <h5>
+                        <a style="color: hotpink" href="/product/index?productId=@product.Id">@product.Name</a>
+                    </h5>
+                    @product.Cost руб
+                    <br><a button class="btn btn-success" role="button"asp-area=""  asp-controller="Cart" asp-action="Add" asp-route-productId="@product.Id">В корзину</a> &nbsp; &nbsp;
+                    <a class="btn btn-success" role="button" asp-area="" asp-controller="Comparison" asp-action="Add" asp-route-productId="@product.Id">Сравнить</a> &nbsp; &nbsp;
+                    @await Component.InvokeAsync("Favourite", product.Id)
+
+                </div>
+            </div>
+        }
+    </div>
+}

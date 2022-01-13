@@ -1,0 +1,54 @@
+﻿@model EditProductViewModel
+
+    <div class="col-6">
+        <div class="justify-content-center">
+            
+            <label>Изображения</label>
+            <div>
+            @foreach (var path in Model.ImagePaths)
+            {
+                <img class="card-img-top" src="@path" style="width:150px;height:100px;" )>                 
+            }   
+            </div>
+        </div>
+        <form class="row-4" method="post" enctype="multipart/form-data">
+            <input type="hidden" asp-for="ImagePaths" value="@Model.ImagePaths.ToList()">
+            <div class="validation" asp-validation-summary="All">   </div>
+            <div class="mb-3">
+                <div>
+                    <input type="hidden" asp-for="Id" value="@Model.Id" />
+                </div>
+            </div>
+            <div class="mb-3">
+                <label asp-for="ImageFiles">Выберите новые файлы для загрузки изображения блюда</label>
+                <input type="file" name="ImageFiles" multiple class="form-control" asp-for="ImageFiles" /><br>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Name">Наименование блюда</label><br />
+                <input asp-for="Name" class="form-control" value="@Model.Name" />
+                <span asp-validation-for="Name" style="color:red" />
+            </div>
+            <div class="mb-3">
+                <label asp-for="Category">Категория</label><br />
+                <select asp-for="@Model.Category"
+                        asp-items="Html.GetEnumSelectList<Category>()"
+                        class="form-control">
+                </select>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Cost">Стоимость, руб</label><br />
+                <input asp-for="Cost" class="form-control" value="@Model.Cost" />
+                <span asp-validation-for="Cost" style="color:red" />
+            </div>
+            <div class="mb-3">
+                <label asp-for="Description">Описание блюда</label><br />
+                <input asp-for="Description" class="form-control" value="@Model.Description" />
+                <span asp-validation-for="Description" style="color:red" />
+            </div>
+            <div class="mb-3">
+            </div>
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary" asp-area="Admin" asp-controller="Products" asp-action="Edit" , asp-route-productId="@Model.Id">Подтвердить</button>
+            </div>
+        </form>
+    </div>

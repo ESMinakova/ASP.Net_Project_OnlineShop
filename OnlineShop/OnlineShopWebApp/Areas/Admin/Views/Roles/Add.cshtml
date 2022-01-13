@@ -1,0 +1,15 @@
+﻿@model RoleViewModel
+
+<div class="col-6">
+    <form class="row-4" method="post">
+        <div class="validation" asp-validation-summary="All">   </div>
+        <div class="mb-3">
+            <label asp-for="Name">Название роли</label><br />
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" style="color:red" />
+        </div>
+        <div class="mb-3">
+            <button type="submit" class="btn btn-primary" asp-area="Admin" asp-controller="Roles" asp-action="Add">Подтвердить</button>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,59 @@
+﻿@model CartViewModel
+@{
+    ViewData["Title"] = "Cart";
+}
+
+@if (Model == null || Model.Items.Count == 0)
+{
+    <div class="row">
+        <div class="col-8">
+            <h2>Ваша корзина пуста!</h2>
+        </div>
+    </div>
+}
+else
+{
+<div class="row">
+    <div class="col-9">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Название позиции</th>
+                    <th scope="col">Количество товара в позиции</th>
+                    <th scope="col">Стоимость позиции </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var product in Model.Items)
+                {
+                    <tr>
+                        <th scope="row">@product.Product.Name</th>
+                        <td>
+                            <a button class="btn btn-link" role="button" asp-area="" asp-controller="Cart" asp-action="Delete" asp-route-productId="@product.Product.Id"> <b>-</b> </a>
+                            @product.Amount
+                            <a button class="btn btn-link" role="button" asp-area="" asp-controller="Cart" asp-action="Add" asp-route-productId="@product.Product.Id"><b> + </b> </a>
+                        </td>
+                        <td>@product.Cost руб.</td>
+                    </tr>
+                }
+                <tr>
+                    <td colspan="2"><b>Итоговая сумма</b></td>
+                    <td colspan="2"><b>@Model.TotalCost руб.</b></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-4">
+        <a button class="btn btn-primary" role="button" asp-area="" asp-controller="Cart" asp-action="Clear">Очистить корзину</a>       
+    </div>
+    <div class="col-5 text-right">        
+        <a button class="btn btn-primary" role="button" asp-area="" asp-controller="Order" asp-action="Index">Оформить заказ</a>
+    </div>
+</div>
+    <div class="row">
+        <div class="col-9">
+            <br><br><br><a class="btn btn-info" asp-area="" asp-controller="home" , asp-action="index" role="button">Продолжить покупки</a>
+        </div>
+    </div>
+
+}

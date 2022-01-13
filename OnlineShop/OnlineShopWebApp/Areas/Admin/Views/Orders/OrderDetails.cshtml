@@ -1,0 +1,70 @@
+﻿@model OrderWithContactsViewModel
+<div class="row">
+    <div class="col-12">
+        <table class="table">
+            <tbody>
+                <tr>
+                    <td scope="col">
+                        @await Component.InvokeAsync("AdminsMenu")
+                    </td>
+                    <td scope="col">
+                        <div class="col-8 card">
+                            <form method="post">
+                                <table class="table">
+                                    <thead>
+                                        <tr><th colspan="2">Заказ </th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td> Дата и время оформления </td>
+                                            <td> @Model.OrderTime </td>
+                                        </tr>
+                                        <tr>
+                                            <td> Адрес доставки </td>
+                                            <td> @Model.UserDeliveryInfo.Street, @Model.UserDeliveryInfo.HouseNumber, @Model.UserDeliveryInfo.FlatNumber </td>
+                                        </tr>
+                                        <tr>
+                                            <td> Получатель </td>
+                                            <td> @Model.UserDeliveryInfo.Name </td>
+                                        </tr>
+                                        <tr>
+                                            <td> Телефон </td>
+                                            <td> @Model.UserDeliveryInfo.Phone </td>
+                                        </tr>
+                                        <tr>
+                                            <td> Комментарий </td>
+                                            <td> @Model.UserDeliveryInfo.Comments </td>
+                                        </tr>
+                                        <tr>
+                                            <td> Сумма заказа </td>
+                                            <td> @Model.Cart.TotalCost </td>
+                                        </tr>
+                                        <tr>
+                                            <td> Способ оплаты </td>
+                                            <td> @Model.UserDeliveryInfo.Pay </td>
+                                        </tr>                                        
+                                        <tr>
+                                            <td> Статус заказа </td>
+                                            <td>
+                                                <select asp-for="@Model.Status"
+                                                        asp-items="Html.GetEnumSelectList<OrderStatusViewModel>()"
+                                                        class="form-control">
+                                                </select>
+                                                <br />
+                                                <br />
+                                                <div class="mb-3">
+                                                    <button type="submit" class="btn btn-primary" asp-area="Admin" asp-controller="Orders" asp-action="SelectStatus" asp-route-orderId="@Model.Id">Подтвердить</button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+

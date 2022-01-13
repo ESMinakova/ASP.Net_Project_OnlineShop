@@ -1,0 +1,47 @@
+﻿@model List<OrderWithContactsViewModel>
+ 
+<div class="row">
+    <div class="col-12">
+        <table class="table">
+            <tbody>
+                <tr>
+                    <td scope="col">
+                    @await Component.InvokeAsync("AdminsMenu")
+                    </td>
+                    <td scope="col">
+                    <h4> Список заказов </h4>
+                    <div class="col-12">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">№</th>
+                                        <th scope="col">Сумма</th>
+                                        <th scope="col">Статус</th>
+                                        <th scope="col">Пользователь</th>
+                                        <th scope="col">Дата</th>
+                                        <th scope="col">Время</th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (int i = 0; i < Model.Count; i++)                                    
+                                    {
+                                    <tr>
+                                        <td> @(i + 1)</td>
+                                        <td> @Model[i].Cart.TotalCost</td>
+                                        <td> @Model[i].Status.GetDisplayName()</td>
+                                        <td> @Model[i].UserDeliveryInfo.Name</td>
+                                        <td> @Model[i].OrderTime.ToShortDateString() </td>
+                                        <td> @Model[i].OrderTime.ToShortTimeString()</td>
+                                        <td><a asp-area="Admin" asp-controller="Orders" asp-action="OrderDetails" asp-route-orderId="@Model[i].Id"> Подробнее </a></td>
+                                    </tr>    
+                                    }                                    
+                                </tbody>
+                            </table>
+                        </div>
+                        </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    </div>

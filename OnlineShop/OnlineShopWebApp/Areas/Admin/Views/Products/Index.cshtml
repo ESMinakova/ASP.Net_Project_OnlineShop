@@ -1,0 +1,67 @@
+﻿@model List<ProductViewModel>
+@{
+    ViewData["Title"] = "Product Catalogue";
+}
+<div class="row">
+    <div class="col-12">
+        <table class="table">
+            <tbody>
+                <tr>
+                    <td scope="col">
+                        @await Component.InvokeAsync("AdminsMenu")
+                    </td>
+                    <td scope="col">
+                        <h4 class="align-content-center"> Продукты &nbsp;&nbsp;&nbsp;</h4>
+                        <div class="row">
+                            @foreach (var product in Model)
+                            {
+                                <div class="col-lg-4 col-md-6 mb-4">
+                                    <div class="card box-shadow px-2 pt-2 h-100">
+                                        <a asp-area="" asp-controller="Product" asp-action="Index" asp-route-productId="@product.Id"><img class="card-img-top" src="@product.ImagePath" alt="Блюдо" )></a>
+                                        <div class="card-body bg-light">
+                                            <h3 class="card-title text-center"><a style="color: hotpink" asp-area="" asp-controller="Product" asp-action="Index" asp-route-productId="@product.Id">@product.Name</a></h3>
+                                            <h5 class="card-text text-center">@product.Cost &#8381;</h5>
+                                        </div>
+                                        <div class="card-body bg-light d-flex align-items-sm-end justify-content-around">
+                                            <a button class="btn btn-outline-success" role="button" asp-area="Admin" asp-controller="Products" asp-action="Edit" asp-route-productId="@product.Id">Редактировать</a>
+                                            <a button class="btn btn-outline-success" role="button" asp-area="Admin" asp-controller="Products" asp-action="Delete" asp-route-productId="@product.Id">Удалить</a>
+
+                                            <!-- Оставить до тех пор, пока я не пойму, как передавать данные в модальные окна -->
+
+                                            @*<button class="btn btn-outline-danger" role="button" data-toggle="modal" data-target="#deleteModal" >Удалить</button>*@
+                                            @*<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" role="dialog" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered" role="dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-body">
+                                                        <br>
+                                                        <h5 class="text-center">Подтвердите удаление продукта</h5>
+                                                        <br>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                                                        <a button type="button" class="btn btn-primary" asp-area="Admin" asp-controller="Products" asp-action="Delete" asp-route-productId="@product.Id">Подтвердить</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>*@
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        <div class="col-lg-4 col-md-6 mb-4 text-center">
+                            <div class="card box-shadow px-2 pt-2 h-100">
+                                <a asp-area="Admin" asp-controller="Products" asp-action="Add">
+                                    <i class="bi bi-plus-square-dotted card-img-top" style="font-size: 9rem; color: orangered;"></i>
+                                </a>
+                                <div class="card-body d-flex align-items-sm-end justify-content-center">
+                                    <br><a button class="btn btn-outline-success" role="button" asp-area="Admin" asp-controller="Products" asp-action="Add">Добавить</a>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

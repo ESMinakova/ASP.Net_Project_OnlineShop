@@ -1,0 +1,15 @@
+﻿@model ProductViewModel 
+<div class="col-lg-4 col-md-6 mb-4">
+        <div class="card box-shadow px-2 pt-2 h-100">
+            <a asp-area="" asp-controller="Product" asp-action="Index" asp-route-productId="@Model.Id"><img class="card-img-top" src="@Model.ImagePath" alt="Блюдо" )></a>
+            <div class="card-body bg-light">
+                <h3 class="card-title text-center"><a style="color: hotpink" asp-area="" asp-controller="Product" asp-action="Index" asp-route-productId="@Model.Id">@Model.Name</a></h3>
+                <h5 class="card-text text-center">@Model.Cost &#8381;</h5>
+            </div>
+            <div class="card-body bg-light d-flex align-items-sm-end justify-content-around">
+                <a button class="btn btn-success btn-sm" role="button" asp-area="" asp-controller="Cart" asp-action="Add" asp-route-productId="@Model.Id">В&nbsp;корзину</a>
+                <a class="btn btn-success btn-sm" role="button" asp-area="" asp-controller="Comparison" asp-action="Add" asp-route-productId="@Model.Id">Сравнить</a>
+                @await Component.InvokeAsync("Favourite", Model.Id)
+            </div>
+        </div>
+    </div>

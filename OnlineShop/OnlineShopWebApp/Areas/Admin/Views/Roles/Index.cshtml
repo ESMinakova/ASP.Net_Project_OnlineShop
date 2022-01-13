@@ -1,0 +1,38 @@
+﻿@model List<RoleViewModel>
+
+<div class="row">
+    <div class="col-8">
+        <table class="table">
+            <tbody>
+                <tr>
+                    <td scope="col">
+                        @await Component.InvokeAsync("AdminsMenu")
+                    </td>
+                    <td scope="col">                        
+                        <div class="col-12">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" colspan="2"><h4>Список ролей</h4></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var role in Model)
+                                    {
+                                        <tr>
+                                            <td> @role.Name </td>
+                                            <td><a asp-area="Admin" asp-controller="Roles" asp-action="Delete" asp-route-roleName="@role.Name"> Удалить </a></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                            <a button class="btn btn-primary" role="button" asp-area="Admin" asp-controller="Roles" asp-action="Add">Добавить</a>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
