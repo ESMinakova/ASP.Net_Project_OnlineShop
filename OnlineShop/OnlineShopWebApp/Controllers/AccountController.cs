@@ -6,7 +6,6 @@ using OnlineShop.Db.Models;
 using OnlineShopWebApp.Models;
 using Serilog;
 using System;
-using System.Threading.Tasks;
 
 namespace OnlineShopWebApp.Controllers
 {
@@ -65,18 +64,18 @@ namespace OnlineShopWebApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> LoginAsync(UserSignInInfo userInfo)
+        public IActionResult Login(UserSignInInfo userInfo)
         {            
             if (ModelState.IsValid)
             {
-                var result = await signInManager.PasswordSignInAsync(userInfo.Login, userInfo.Password, userInfo.IsMemorize, false);
+                var result = signInManager.PasswordSignInAsync(userInfo.Login, userInfo.Password, userInfo.IsMemorize, false).Result;
                 if (result.Succeeded)
                 {
-                    var user = await userManager.FindByNameAsync(userInfo.Login);
+                    var user = userManager.FindByNameAsync(userInfo.Login).Result;
                     if (user != null)
                     {
                         // получение данных у неавторизованного пользователя 
-                        var unauthorizedUserData = await TryGetDataForAuthorizedUserAsync(); 
+                        var unauthorizedUserData = TryGetDataForAuthorizedUser(); 
                         // перенос корзины, списка сравнения и избранного от неавторизованного пользователя
                         MoveDataToAuthorizedUser(user, unauthorizedUserData.Cart, unauthorizedUserData.Comparison, unauthorizedUserData.Favourite); 
                     }                        
@@ -93,20 +92,20 @@ namespace OnlineShopWebApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> RegisterAsync(UserRegisterInfo userInfo)
+        public IActionResult Register(UserRegisterInfo userInfo)
         {
             if (userInfo.Login == userInfo.Password)
                 ModelState.AddModelError("", "Логин и пароль не должны совпадать!");            
             if (ModelState.IsValid)
             {
                 var user = new User { Email = userInfo.Login, UserName = userInfo.Login, RegistrationDate = DateTime.Now };
-                var result = await userManager.CreateAsync(user, userInfo.Password);
+                var result = userManager.CreateAsync(user, userInfo.Password).Result;
                 if (result.Succeeded)
                 {                    
                     signInManager.SignInAsync(user, false).Wait();
                     TryAssignRole(user);
                     // получение данных у неавторизованного пользователя 
-                    var unauthorizedUserData = await TryGetDataForAuthorizedUserAsync();
+                    var unauthorizedUserData = TryGetDataForAuthorizedUser();
                     // перенос корзины, списка сравнения и избранного от неавторизованного пользователя
                     MoveDataToAuthorizedUser(user, unauthorizedUserData.Cart, unauthorizedUserData.Comparison, unauthorizedUserData.Favourite); 
                     if (userInfo.ReturnUrl != null)
@@ -140,7 +139,7 @@ namespace OnlineShopWebApp.Controllers
             return userManager.FindByEmailAsync(login).Result != null;
         }
 
-        private async Task<UnauthorizedUserData> TryGetDataForAuthorizedUserAsync()
+        private UnauthorizedUserData TryGetDataForAuthorizedUser()
         {
             var user = userManager.GetUserAsync(HttpContext.User).Result;            
             var cart = new Cart();
@@ -149,9 +148,9 @@ namespace OnlineShopWebApp.Controllers
             if (user == null)
             {
                 var userId = Request.Cookies["Id"];
-                cart = await cartRepository.TryGetCartByUserIdAsync(userId);
-                comparison = await comparisonRepository.TryGetComparisonByUserIdAsync(userId);
-                favourite = await favouritesRepository.TryGetFavoriteProductsListByUserIdAsync(userId);
+                cart = cartRepository.TryGetCartByUserId(userId);
+                comparison = comparisonRepository.TryGetComparisonByUserId(userId);
+                favourite = favouritesRepository.TryGetFavoriteProductsListByUserId(userId);
             }
             return new UnauthorizedUserData { Cart = cart, Comparison = comparison, Favourite = favourite };
         }
@@ -159,9 +158,9 @@ namespace OnlineShopWebApp.Controllers
 
         private void MoveDataToAuthorizedUser(User user, Cart cart, Comparison comparison, Favourite favourite)
         {
-            cartRepository.MoveDataToAuthorizedUserAsync(user, cart);
-            comparisonRepository.MoveDataToAuthorizedUserAsync(user, comparison);
-            favouritesRepository.MoveDataToAuthorizedUserAsync(user, favourite);
+            cartRepository.MoveDataToAuthorizedUser(user, cart);
+            comparisonRepository.MoveDataToAuthorizedUser(user, comparison);
+            favouritesRepository.MoveDataToAuthorizedUser(user, favourite);
         }
 
 

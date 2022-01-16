@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Db;
 using OnlineShop.Db.Models;
 using OnlineShopWebApp.Helpers;
-using System.Threading.Tasks;
 
 namespace OnlineShopWebApp.Views.Shared.Components.CartIcon
 {
@@ -18,17 +17,17 @@ namespace OnlineShopWebApp.Views.Shared.Components.CartIcon
             this.userManager = userManager;
         }
 
-        public async Task<IViewComponentResult> InvokeAsync()
+        public IViewComponentResult Invoke()
         {
-            var user = await userManager.GetUserAsync(HttpContext.User);
+            var user = userManager.GetUserAsync(HttpContext.User).Result;
             var cart = new Cart();
             if (user == null)
             {
                 var userId = Request.Cookies["Id"];
-                cart = await cartRepository.TryGetCartByUserIdAsync(userId);
+                cart = cartRepository.TryGetCartByUserId(userId);
             }
             else               
-                cart = await cartRepository.TryGetCartByUserIdAsync(user.Id);
+                cart = cartRepository.TryGetCartByUserId(user.Id);
             var productCount = cart.ToCartViewModel()?.Amount ?? 0;
             return View("CartIcon", productCount);
         }

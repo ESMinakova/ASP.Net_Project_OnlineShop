@@ -6,7 +6,6 @@ using OnlineShop.Db;
 using OnlineShop.Db.Models;
 using OnlineShopWebApp.Helpers;
 using System;
-using System.Threading.Tasks;
 
 namespace OnlineShopWebApp.Controllers
 {
@@ -25,7 +24,7 @@ namespace OnlineShopWebApp.Controllers
             this.userManager = userManager;
         }
 
-        public async Task<ActionResult> Index()
+        public IActionResult Index()
         {
             var user = userManager.GetUserAsync(HttpContext.User).Result;
             var favourite = new Favourite();
@@ -39,31 +38,31 @@ namespace OnlineShopWebApp.Controllers
                     cookieOptions.Expires = DateTime.Now.AddDays(30);
                     Response.Cookies.Append("id", userId, cookieOptions);
                 }
-                favourite = await favouritesRepository.TryGetFavoriteProductsListByUserIdAsync(userId);
+                favourite = favouritesRepository.TryGetFavoriteProductsListByUserId(userId);
             }
             else
-                favourite = await favouritesRepository.TryGetFavoriteProductsListByUserIdAsync(user.Id);
+                favourite = favouritesRepository.TryGetFavoriteProductsListByUserId(user.Id);
             var favouriteViewModel = favourite.ToFavouriteViewModel();
             return View(favouriteViewModel);
         }
 
-        public async Task<ActionResult> DeleteAsync(Guid productId)
+        public IActionResult Delete(Guid productId)
         {
-            var currentProduct = await shop.TryGetProductAsync(productId);
+            var currentProduct = shop.TryGetProduct(productId);
             var user = userManager.GetUserAsync(HttpContext.User).Result;
             if (user == null)
             {
                 var userId = Request.Cookies["Id"];
-                await favouritesRepository .DeleteAsync(currentProduct.Id, userId);
+                favouritesRepository.Delete(currentProduct.Id, userId);
             }
             else
-                await favouritesRepository .DeleteAsync(currentProduct.Id, user.Id);
+                favouritesRepository.Delete(currentProduct.Id, user.Id);
             return RedirectToAction("Index");
         }
 
-        public async Task<ActionResult> AddOrDeleteAsync(Guid productId)
+        public IActionResult AddOrDelete(Guid productId)
         {
-            var currentProduct = await shop.TryGetProductAsync (productId);
+            var currentProduct = shop.TryGetProduct(productId);
             var user = userManager.GetUserAsync(HttpContext.User).Result;
             if (user == null)
             {
@@ -75,10 +74,10 @@ namespace OnlineShopWebApp.Controllers
                     cookieOptions.Expires = DateTime.Now.AddDays(30);
                     Response.Cookies.Append("id", userId, cookieOptions);
                 }
-                await favouritesRepository.AddOrDeleteAsync(currentProduct, userId);
+                favouritesRepository.AddOrDelete(currentProduct, userId);
             }
             else
-                await favouritesRepository .AddOrDeleteAsync(currentProduct, user.Id);
+                favouritesRepository.AddOrDelete(currentProduct, user.Id);
             return RedirectToAction("Index");
         }
     }

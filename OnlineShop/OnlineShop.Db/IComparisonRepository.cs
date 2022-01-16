@@ -1,22 +1,21 @@
 ﻿using OnlineShop.Db.Models;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace OnlineShop.Db
 {
     public interface IComparisonRepository
     {
 
-        Task<Comparison> TryGetComparisonByUserIdAsync(string userId);
+        Comparison TryGetComparisonByUserId(string userId);
 
-        Task AddAsync(Product product, string userId);
+        void Add(Product product, string userId);
 
-        Task DeleteAsync(Guid productId, string userId);
+        void Delete(Guid productId, string userId);
 
         Comparison Clone(Comparison comparison);
 
-        Task MoveDataToAuthorizedUserAsync(User user, Comparison comparison);
+        void MoveDataToAuthorizedUser(User user, Comparison comparison);
 
     }
 }

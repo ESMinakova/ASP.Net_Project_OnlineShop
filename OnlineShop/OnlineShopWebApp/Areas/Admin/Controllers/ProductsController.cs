@@ -8,7 +8,6 @@ using OnlineShopWebApp.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace OnlineShopWebApp.Areas.Admin.Controllers
 {
@@ -24,24 +23,24 @@ namespace OnlineShopWebApp.Areas.Admin.Controllers
             this.shop = shop;
             this.imageProcessing = imageProcessing;
         }
-
-        public async Task<ActionResult> Index()
-        {           
-            var productsViewModels = await shop.GetAllAsync();
-            return View(productsViewModels.ToProductViewModels());
+        public IActionResult Index()
+        {
+            var productsViewModels = shop.GetAll().ToProductViewModels();
+            return View(productsViewModels);
         }
 
-        public async Task<ActionResult> DeleteAsync(Guid productId)
+        public IActionResult Delete(Guid productId)
         {
-            var product = await shop.TryGetProductAsync(productId);
-            await shop.RemoveAsync(product);
+            var product = shop.TryGetProduct(productId);
+            shop.Remove(product);
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<ActionResult> EditAsync(Guid productId)
+        public IActionResult Edit(Guid productId)
         {
-            var product = await shop.TryGetProductAsync(productId);            
-            return View(product.ToEditProductViewModel());
+            var product = shop.TryGetProduct(productId);
+            var editProduct = product.ToEditProductViewModel();
+            return View(editProduct);
         }
 
         public IActionResult Add()
@@ -51,22 +50,21 @@ namespace OnlineShopWebApp.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> EditAsync(Guid productId, EditProductViewModel editedProduct)
+        public IActionResult Edit(Guid productId, EditProductViewModel editedProduct)
         {
             if (ModelState.IsValid)
             {
                 var product = editedProduct.ToProductFromEditedProductViewModel();
                 var imagePaths = imageProcessing.UploadFiles(editedProduct.ImageFiles, ImageFolders.Products);
-                var productBeforeEdition = await shop.TryGetProductAsync(productId);
-                product.ImagePaths = productBeforeEdition.Images.Select(x => x.Path).ToList();
+                product.ImagePaths = shop.TryGetProduct(productId).Images.Select(x => x.Path).ToList();
                 product.ImagePaths.AddRange(imagePaths);
                 product.ImagePath.Distinct();
                 
                 var productDb = product.ToProduct(product.ImagePaths);
-                await shop.EditAsync(productId, productDb);
+                shop.Edit(productId, productDb);
                 return View("SuccessfulEdition");
             }
-            return RedirectToAction(nameof(EditAsync));
+            return RedirectToAction(nameof(Edit));
         }
 
 
@@ -79,7 +77,7 @@ namespace OnlineShopWebApp.Areas.Admin.Controllers
                 var imagePaths = imageProcessing.UploadFiles(createdProduct.ImageFiles, ImageFolders.Products);
                 var product = createdProduct.ToProductFromCreateProductViewModel();
                 var productDb = product.ToProduct(imagePaths);
-                shop.AddAsync(productDb);
+                shop.Add(productDb);
                 return View("SuccessfulAdding");
             }
             return RedirectToAction(nameof(Add));

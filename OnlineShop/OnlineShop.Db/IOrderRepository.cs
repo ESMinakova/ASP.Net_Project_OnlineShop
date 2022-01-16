@@ -1,18 +1,17 @@
 ﻿using OnlineShop.Db.Models;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace OnlineShop.Db
 {
     public interface IOrderRepository
     {
-        Task AddAsync(OrderWithContacts order);
+        void Add(OrderWithContacts order);
 
-        Task<OrderWithContacts> TryGetOrderByIdAsync(Guid orderId);
+        OrderWithContacts TryGetOrderById(Guid orderId);
 
-        Task SelectStatusAsync(Guid orderId, OrderStatus newStatus);
+        void SelectStatus(Guid orderId, OrderStatus newStatus);
 
-        Task<List<OrderWithContacts>> GetAllAsync();
+        List<OrderWithContacts> GetAll();
     }
 }

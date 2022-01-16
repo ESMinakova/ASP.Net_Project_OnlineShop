@@ -1,23 +1,22 @@
 ﻿using OnlineShop.Db.Models;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace OnlineShop.Db
 {
     public interface IFavouritesRepository
     {
 
-        Task<Favourite> TryGetFavoriteProductsListByUserIdAsync(string userId);
+        Favourite TryGetFavoriteProductsListByUserId(string userId);
 
-        Task AddAsync(Product product, string userId);
+        void Add(Product product, string userId);
 
-        Task DeleteAsync(Guid productId, string userId);
+        void Delete(Guid productId, string userId);
 
-        Task AddOrDeleteAsync(Product product, string userId);
+        void AddOrDelete(Product product, string userId);
 
         Favourite Clone(Favourite favourite);
 
-        Task MoveDataToAuthorizedUserAsync(User user, Favourite favourite);
+        void MoveDataToAuthorizedUser(User user, Favourite favourite);
     }
 }
