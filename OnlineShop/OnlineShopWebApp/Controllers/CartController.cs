@@ -25,7 +25,7 @@ namespace OnlineShopWebApp.Controllers
         }
         public async Task<ActionResult> Index()
         {
-            var user = userManager.GetUserAsync(HttpContext.User).Result;
+            var user = await userManager.GetUserAsync(HttpContext.User);
             var cart = new Cart();
             if (user == null)
             {
@@ -48,7 +48,7 @@ namespace OnlineShopWebApp.Controllers
         public async Task<ActionResult> AddAsync(Guid productId)
         {
             var currentProduct = await shop.TryGetProductAsync(productId);
-            var user = userManager.GetUserAsync(HttpContext.User).Result;
+            var user = await userManager.GetUserAsync(HttpContext.User);
             if (user == null)
             {
                 var userId = Request.Cookies["Id"];
@@ -70,7 +70,7 @@ namespace OnlineShopWebApp.Controllers
         public async Task<ActionResult> DeleteAsync(Guid productId)
         {
             var currentProduct = await shop.TryGetProductAsync(productId);
-            var user = userManager.GetUserAsync(HttpContext.User).Result;
+            var user = await userManager.GetUserAsync(HttpContext.User);
             if (user == null)
             {
                 var userId = Request.Cookies["Id"];
@@ -80,16 +80,16 @@ namespace OnlineShopWebApp.Controllers
                 await cartsRepository .DeleteAsync(currentProduct.Id, user.Id);
             return RedirectToAction("Index");
         }
-        public IActionResult Clear()
+        public async Task<ActionResult> ClearAsync()
         {
-            var user = userManager.GetUserAsync(HttpContext.User).Result;
+            var user = await userManager.GetUserAsync(HttpContext.User);
             if (user == null)
             {
                 var userId = Request.Cookies["Id"];
-                cartsRepository.ClearAsync(userId);
+                await cartsRepository.ClearAsync(userId);
             }
             else
-                cartsRepository.ClearAsync(user.Id);
+                await cartsRepository.ClearAsync(user.Id);
             return RedirectToAction("Index");
         }
 

@@ -27,7 +27,7 @@ namespace OnlineShopWebApp.Controllers
 
         public async Task<ActionResult> Index()
         {
-            var user = userManager.GetUserAsync(HttpContext.User).Result;
+            var user = await userManager.GetUserAsync(HttpContext.User);
             var favourite = new Favourite();
             if (user == null)
             {
@@ -50,7 +50,7 @@ namespace OnlineShopWebApp.Controllers
         public async Task<ActionResult> DeleteAsync(Guid productId)
         {
             var currentProduct = await shop.TryGetProductAsync(productId);
-            var user = userManager.GetUserAsync(HttpContext.User).Result;
+            var user = await userManager.GetUserAsync(HttpContext.User);
             if (user == null)
             {
                 var userId = Request.Cookies["Id"];
@@ -64,7 +64,7 @@ namespace OnlineShopWebApp.Controllers
         public async Task<ActionResult> AddOrDeleteAsync(Guid productId)
         {
             var currentProduct = await shop.TryGetProductAsync (productId);
-            var user = userManager.GetUserAsync(HttpContext.User).Result;
+            var user = await userManager.GetUserAsync(HttpContext.User);
             if (user == null)
             {
                 var userId = Request.Cookies["Id"];
@@ -78,7 +78,7 @@ namespace OnlineShopWebApp.Controllers
                 await favouritesRepository.AddOrDeleteAsync(currentProduct, userId);
             }
             else
-                await favouritesRepository .AddOrDeleteAsync(currentProduct, user.Id);
+                await favouritesRepository.AddOrDeleteAsync(currentProduct, user.Id);
             return RedirectToAction("Index");
         }
     }

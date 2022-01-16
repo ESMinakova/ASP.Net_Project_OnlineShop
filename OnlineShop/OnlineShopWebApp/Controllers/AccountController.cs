@@ -40,25 +40,25 @@ namespace OnlineShopWebApp.Controllers
             return View(new UserRegisterInfo { ReturnUrl = returnUrl });
         }
 
-        public IActionResult Logout()
+        public async Task<ActionResult> LogoutAsync()
         {
-            signInManager.SignOutAsync().Wait();
+            await signInManager.SignOutAsync();
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 
         [AcceptVerbs("Get", "Post")]
-        public IActionResult CheckNonExistentLogin(string login)
+        public async Task<ActionResult> CheckNonExistentLoginAsync(string login)
         {
-            if (IsUserExists(login))
+            if (await IsUserExistsAsync(login))
                 return Json(false);
             return Json(true);
         }
 
 
         [AcceptVerbs("Get", "Post")]
-        public IActionResult CheckExistentLogin(string login)
+        public async Task<ActionResult> CheckExistentLoginAsync(string login)
         {
-            if (!IsUserExists(login))
+            if (!await IsUserExistsAsync(login))
                 return Json(false);
             return Json(true);
         }
@@ -78,7 +78,7 @@ namespace OnlineShopWebApp.Controllers
                         // получение данных у неавторизованного пользователя 
                         var unauthorizedUserData = await TryGetDataForAuthorizedUserAsync(); 
                         // перенос корзины, списка сравнения и избранного от неавторизованного пользователя
-                        MoveDataToAuthorizedUser(user, unauthorizedUserData.Cart, unauthorizedUserData.Comparison, unauthorizedUserData.Favourite); 
+                        await MoveDataToAuthorizedUserAsync(user, unauthorizedUserData.Cart, unauthorizedUserData.Comparison, unauthorizedUserData.Favourite); 
                     }                        
                     if (userInfo.ReturnUrl != null)
                         return Redirect(userInfo.ReturnUrl);                    
@@ -103,12 +103,12 @@ namespace OnlineShopWebApp.Controllers
                 var result = await userManager.CreateAsync(user, userInfo.Password);
                 if (result.Succeeded)
                 {                    
-                    signInManager.SignInAsync(user, false).Wait();
-                    TryAssignRole(user);
+                    await signInManager.SignInAsync(user, false);
+                    await TryAssignRoleAsync (user);
                     // получение данных у неавторизованного пользователя 
                     var unauthorizedUserData = await TryGetDataForAuthorizedUserAsync();
                     // перенос корзины, списка сравнения и избранного от неавторизованного пользователя
-                    MoveDataToAuthorizedUser(user, unauthorizedUserData.Cart, unauthorizedUserData.Comparison, unauthorizedUserData.Favourite); 
+                    await MoveDataToAuthorizedUserAsync(user, unauthorizedUserData.Cart, unauthorizedUserData.Comparison, unauthorizedUserData.Favourite); 
                     if (userInfo.ReturnUrl != null)
                         return Redirect(userInfo.ReturnUrl);
                     return RedirectToAction(nameof(HomeController.Index), "Home");
@@ -123,11 +123,11 @@ namespace OnlineShopWebApp.Controllers
         }
 
 
-        private void TryAssignRole(User user)
+        private async Task TryAssignRoleAsync(User user)
         {
             try
             {
-                userManager.AddToRoleAsync(user, Constants.UserRoleName).Wait();
+                await userManager.AddToRoleAsync(user, Constants.UserRoleName);
             }
             catch (Exception exc)
             {
@@ -135,14 +135,14 @@ namespace OnlineShopWebApp.Controllers
             }
         }
 
-        public bool IsUserExists(string login)
+        public async Task<bool> IsUserExistsAsync(string login)
         {
-            return userManager.FindByEmailAsync(login).Result != null;
+            return await userManager.FindByEmailAsync(login) != null;
         }
 
         private async Task<UnauthorizedUserData> TryGetDataForAuthorizedUserAsync()
         {
-            var user = userManager.GetUserAsync(HttpContext.User).Result;            
+            var user = await userManager.GetUserAsync(HttpContext.User);            
             var cart = new Cart();
             var comparison = new Comparison();
             var favourite = new Favourite();
@@ -157,11 +157,11 @@ namespace OnlineShopWebApp.Controllers
         }
 
 
-        private void MoveDataToAuthorizedUser(User user, Cart cart, Comparison comparison, Favourite favourite)
+        private async Task MoveDataToAuthorizedUserAsync(User user, Cart cart, Comparison comparison, Favourite favourite)
         {
-            cartRepository.MoveDataToAuthorizedUserAsync(user, cart);
-            comparisonRepository.MoveDataToAuthorizedUserAsync(user, comparison);
-            favouritesRepository.MoveDataToAuthorizedUserAsync(user, favourite);
+            await cartRepository.MoveDataToAuthorizedUserAsync(user, cart);
+            await comparisonRepository.MoveDataToAuthorizedUserAsync(user, comparison);
+            await favouritesRepository .MoveDataToAuthorizedUserAsync(user, favourite);
         }
 
 

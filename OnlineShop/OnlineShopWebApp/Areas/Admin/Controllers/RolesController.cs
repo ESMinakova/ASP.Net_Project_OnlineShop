@@ -6,6 +6,7 @@ using OnlineShopWebApp.Areas.Admin.Models;
 using OnlineShopWebApp.Helpers;
 using OnlineShopWebApp.Models;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace OnlineShopWebApp.Areas.Admin.Controllers
 {
@@ -28,11 +29,11 @@ namespace OnlineShopWebApp.Areas.Admin.Controllers
             return View(rolesViewModel);
         }
 
-        public IActionResult Delete(string roleName)
+        public async Task<ActionResult> DeleteAsync(string roleName)
         {
-            var role = roleManager.FindByNameAsync(roleName).Result;
+            var role = await roleManager.FindByNameAsync(roleName);
             if (role != null)            
-                roleManager.DeleteAsync(role).Wait();      
+                await roleManager.DeleteAsync(role);      
             
             return RedirectToAction(nameof(Index));
         }
@@ -44,18 +45,18 @@ namespace OnlineShopWebApp.Areas.Admin.Controllers
 
 
         [AcceptVerbs("Get", "Post")]
-        public IActionResult CheckName(string name)
+        public async Task<ActionResult> CheckNameAsync(string name)
         {
-            if (roleManager.FindByNameAsync(name).Result != null)
+            if (await roleManager.FindByNameAsync(name) != null)
                 return Json(false);
             return Json(true);
         }
 
         [HttpPost]
-        public IActionResult Add(RoleViewModel role)
+        public async Task<ActionResult> AddAsync(RoleViewModel role)
         {
             if (ModelState.IsValid)            
-                roleManager.CreateAsync(new IdentityRole(role.Name)).Wait();               
+                await roleManager.CreateAsync(new IdentityRole(role.Name));               
                                        
             return RedirectToAction(nameof(Index));
         }

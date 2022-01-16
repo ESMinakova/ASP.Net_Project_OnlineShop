@@ -28,7 +28,7 @@ namespace OnlineShop.Db
 
         public async Task<List<Product>> TryGetProductsByCategoryAsync(Category category)
         {
-            return await databaseContext.Products.Where(x => x.Category == category).ToListAsync();
+            return await databaseContext.Products.Where(x => x.Category == category).Include(x => x.Images).ToListAsync();
         }
 
         public async Task AddAsync(Product product)

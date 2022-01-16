@@ -23,7 +23,7 @@ else
         {
         <div class="col-4 card">
             <a class="btn btn-outline-warning" role="button" asp-area="" asp-controller="Favourite" asp-action="Delete" asp-route-productId="@product.Id">Убрать из избранного</a>
-            <a href="product/index?productId=@product.Id"><img class="card-img-top" src="@product.ImagePaths" )></a>
+            <a href="product/index?productId=@product.Id"><img class="card-img-top" src="@product.ImagePath" )></a>
             <div class="card-body">
                 <h5><a style="color: hotpink" href="product/index?productId=@product.Id">@product.Name</a></h5>
                 @product.Cost руб

@@ -56,7 +56,7 @@ namespace OnlineShopWebApp.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 var product = editedProduct.ToProductFromEditedProductViewModel();
-                var imagePaths = imageProcessing.UploadFiles(editedProduct.ImageFiles, ImageFolders.Products);
+                var imagePaths = await imageProcessing .UploadFilesAsync(editedProduct.ImageFiles, ImageFolders.Products);
                 var productBeforeEdition = await shop.TryGetProductAsync(productId);
                 product.ImagePaths = productBeforeEdition.Images.Select(x => x.Path).ToList();
                 product.ImagePaths.AddRange(imagePaths);
@@ -72,14 +72,14 @@ namespace OnlineShopWebApp.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Add(CreateProductViewModel createdProduct)
+        public async Task<ActionResult> AddAsync(CreateProductViewModel createdProduct)
         {
             if (ModelState.IsValid)
             {                
-                var imagePaths = imageProcessing.UploadFiles(createdProduct.ImageFiles, ImageFolders.Products);
+                var imagePaths = await imageProcessing.UploadFilesAsync(createdProduct.ImageFiles, ImageFolders.Products);
                 var product = createdProduct.ToProductFromCreateProductViewModel();
                 var productDb = product.ToProduct(imagePaths);
-                shop.AddAsync(productDb);
+                await shop.AddAsync(productDb);
                 return View("SuccessfulAdding");
             }
             return RedirectToAction(nameof(Add));

@@ -20,7 +20,7 @@ namespace OnlineShopWebApp.Views.Shared.Components.CartForOrder
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var user = userManager.FindByEmailAsync(User.Identity.Name).Result;
+            var user = await userManager.FindByEmailAsync(User.Identity.Name);
             var cart = new Cart();
             if (user != null)
                 cart = await cartsRepository.TryGetCartByUserIdAsync(user.Id);            

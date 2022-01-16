@@ -18,7 +18,7 @@ namespace OnlineShop.Db
 
         public async Task<Favourite> TryGetFavoriteProductsListByUserIdAsync(string userId)
         {            
-            return await databaseContext.Favourites.Include(x => x.FavouriteProducts).FirstOrDefaultAsync(x => x.UserId == userId);
+            return await databaseContext.Favourites.Include(x => x.FavouriteProducts).ThenInclude(x => x.Images).FirstOrDefaultAsync(x => x.UserId == userId);
         }
 
         public async Task AddAsync(Product product, string userId)

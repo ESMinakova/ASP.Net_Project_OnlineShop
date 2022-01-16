@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Db;
 using OnlineShop.Db.Models;
@@ -13,12 +14,14 @@ namespace OnlineShopWebApp.Controllers
     public class OrderController : Controller
     {
         private readonly ICartRepository cartsRepository;
-        private readonly IOrderRepository orderRepository; 
+        private readonly IOrderRepository orderRepository;
+        private readonly UserManager<User> userManager;
 
-        public OrderController(ICartRepository cartsRepository, IOrderRepository orderRepository)
+        public OrderController(ICartRepository cartsRepository, IOrderRepository orderRepository, UserManager<User> userManager)
         {
             this.cartsRepository = cartsRepository;
             this.orderRepository = orderRepository;
+            this.userManager = userManager;
         }
 
         public IActionResult Index()
@@ -31,13 +34,13 @@ namespace OnlineShopWebApp.Controllers
         {
             if (ModelState.IsValid)
             {
-
-                var cart = await cartsRepository.TryGetCartByUserIdAsync(Constants.UserId);
+                var user = await userManager.GetUserAsync(HttpContext.User);
+                var cart = await cartsRepository.TryGetCartByUserIdAsync(user.Id);
                 var order = new OrderWithContactsViewModel { UserDeliveryInfo = userInfo, OrderTime = DateTime.Now, Cart = cart.ToCartViewModel() };                
                 var dbOrder = order.ToOrderWithContacts();
                 dbOrder.Cart = cartsRepository.Clone(cart);                
                 await orderRepository.AddAsync(dbOrder);
-                await cartsRepository.ClearAsync(Constants.UserId);
+                await cartsRepository.ClearAsync(user.Id);
                 return View();
             }
             return RedirectToAction("Index");

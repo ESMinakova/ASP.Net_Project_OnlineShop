@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace OnlineShopWebApp
 {
@@ -16,7 +17,7 @@ namespace OnlineShopWebApp
         {            
             this.appEnvironment = appEnvironment;
         }
-        public string UploadFile(IFormFile uploadedFile, ImageFolders folder )
+        public async Task<string> UploadFileAsync(IFormFile uploadedFile, ImageFolders folder )
         {    
             if (uploadedFile != null)
             {
@@ -26,19 +27,20 @@ namespace OnlineShopWebApp
                 var fileName = Guid.NewGuid() + "." + uploadedFile.FileName.Split('.').Last();
                 var path = Path.Combine(folderPath, fileName);
                 using (var fileStream = new FileStream(path, FileMode.Create))
-                    uploadedFile.CopyToAsync(fileStream).Wait();
+                    await uploadedFile.CopyToAsync(fileStream);
                 return "/Content/" + folder + "/" + fileName;
             }
             return null;
                       
         }
 
-        public List<string> UploadFiles(List<IFormFile> uploadedFiles, ImageFolders folder)
+        public async Task<List<string>> UploadFilesAsync(List<IFormFile> uploadedFiles, ImageFolders folder)
         {
             var imagesPaths = new List<string>();
             foreach (var file in uploadedFiles)
             {
-                imagesPaths.Add(UploadFile(file, folder));
+                var path = await UploadFileAsync(file, folder);
+                imagesPaths.Add(path);
             }
             return imagesPaths;
         }

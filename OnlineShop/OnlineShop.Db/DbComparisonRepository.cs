@@ -18,7 +18,7 @@ namespace OnlineShop.Db
 
         public async Task<Comparison> TryGetComparisonByUserIdAsync(string userId)
         {
-            return await databaseContext.Comparisons.Include(x => x.ProductsToCompare).FirstOrDefaultAsync(x => x.UserId == userId);
+            return await databaseContext.Comparisons.Include(x => x.ProductsToCompare).ThenInclude(x => x.Images).FirstOrDefaultAsync(x => x.UserId == userId);
         }
 
         public async Task AddAsync(Product product, string userId)

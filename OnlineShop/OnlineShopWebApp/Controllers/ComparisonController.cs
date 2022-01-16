@@ -25,7 +25,7 @@ namespace OnlineShopWebApp.Controllers
 
         public async Task<ActionResult> Index()
         {
-            var user = userManager.GetUserAsync(HttpContext.User).Result;
+            var user = await userManager.GetUserAsync(HttpContext.User);
             var comparison = new Comparison();
             if (user == null)
             {
@@ -48,7 +48,7 @@ namespace OnlineShopWebApp.Controllers
         public async Task<ActionResult> AddAsync(Guid productId)
         {
             var currentProduct = await shop.TryGetProductAsync(productId);
-            var user = userManager.GetUserAsync(HttpContext.User).Result;
+            var user = await userManager.GetUserAsync(HttpContext.User);
             if (user == null)
             {
                 var userId = Request.Cookies["Id"];
@@ -59,10 +59,10 @@ namespace OnlineShopWebApp.Controllers
                     cookieOptions.Expires = DateTime.Now.AddDays(30);
                     Response.Cookies.Append("id", userId, cookieOptions);
                 }
-                await comparisonRepository .AddAsync(currentProduct, userId);
+                await comparisonRepository.AddAsync(currentProduct, userId);
             }
             else
-                await comparisonRepository .AddAsync(currentProduct, user.Id);
+                await comparisonRepository.AddAsync(currentProduct, user.Id);
             return RedirectToAction("Index");
 
 
@@ -70,7 +70,7 @@ namespace OnlineShopWebApp.Controllers
         public async Task<ActionResult> DeleteAsync(Guid productId)
         {
             var currentProduct = await shop.TryGetProductAsync(productId);
-            var user = userManager.GetUserAsync(HttpContext.User).Result;
+            var user = await userManager.GetUserAsync(HttpContext.User);
             if (user == null)
             {
                 var userId = Request.Cookies["Id"];

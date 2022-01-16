@@ -8,6 +8,7 @@ using OnlineShopWebApp.Helpers;
 using OnlineShopWebApp.Models;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace OnlineShopWebApp.Areas.Admin.Controllers
 {
@@ -34,9 +35,9 @@ namespace OnlineShopWebApp.Areas.Admin.Controllers
             return View(usersViewModel);
         }
 
-        public IActionResult UserDetails(string login)
+        public async Task<ActionResult> UserDetailsAsync(string login)
         {
-            var currentUser = userManager.FindByEmailAsync(login).Result;
+            var currentUser = await userManager.FindByEmailAsync(login);
             return View(currentUser.ToUserViewModel());
         }
 
@@ -47,16 +48,16 @@ namespace OnlineShopWebApp.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult ChangePassword(string login, ChangePassword changePassword)
+        public async Task<ActionResult> ChangePasswordAsync(string login, ChangePassword changePassword)
         {
             if (ModelState.IsValid)
             {
-                var currentUser = userManager.FindByEmailAsync(login).Result;
+                var currentUser = await userManager.FindByEmailAsync(login);
                 if (currentUser != null)
                 {
                     var newHashPassword = userManager.PasswordHasher.HashPassword(currentUser, changePassword.Password);
                     currentUser.PasswordHash = newHashPassword;
-                    userManager.UpdateAsync(currentUser).Wait();
+                    await userManager.UpdateAsync(currentUser);
                     return RedirectToAction(nameof(Index));
                 }
                 else
@@ -66,34 +67,34 @@ namespace OnlineShopWebApp.Areas.Admin.Controllers
         }
 
 
-        public IActionResult Edit(string login)
+        public async Task<ActionResult> EditAsync(string login)
         {
-            var currentUser = userManager.FindByEmailAsync(login).Result;
+            var currentUser = await userManager.FindByEmailAsync(login);
             return View(currentUser.ToUserViewModel());
         }
 
         [HttpPost]
-        public IActionResult Edit(string login, UserViewModel user)
+        public async Task<ActionResult> EditAsync(string login, UserViewModel user)
         {
             if (ModelState.IsValid)
             {
-                var currentUser = userManager.FindByEmailAsync(login).Result;
+                var currentUser = await userManager.FindByEmailAsync(login);
                 currentUser.UserName = user.Name;
                 currentUser.PhoneNumber = user.Phone;
-                identityContext.SaveChanges();
+                await identityContext.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(user);
         }
        
 
-        public IActionResult AddRole(string login)
+        public async Task<IActionResult> AddRoleAsync(string login)
         {
-            var currentUser = userManager.FindByEmailAsync(login).Result;
+            var currentUser = await userManager.FindByEmailAsync(login);
             if (currentUser != null)
             {
                 var currentUserViewModel = currentUser.ToUserViewModel();
-                var currentUserRoles = userManager.GetRolesAsync(currentUser).Result.ToList();
+                var currentUserRoles = await userManager.GetRolesAsync(currentUser);
                 var allRolesViewModel = roleManager.Roles.Select(x => x.ToRoleViewModel()).ToList();
                 var userAndRoles = (currentUserViewModel, currentUserRoles, allRolesViewModel);
                 return View(userAndRoles);
@@ -102,29 +103,29 @@ namespace OnlineShopWebApp.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddRole(string login, List<string> roles)
+        public async Task<ActionResult> AddRoleAsync(string login, List<string> roles)
         {            
-            var currentUser = userManager.FindByEmailAsync(login).Result;
+            var currentUser = await userManager.FindByEmailAsync(login);
             if (currentUser != null)
             {
-                var userRoles = userManager.GetRolesAsync(currentUser).Result;                
+                var userRoles = await userManager.GetRolesAsync(currentUser);                
                 var allRoles = roleManager.Roles.ToList();                
                 var addedRoles = roles.Except(userRoles);                
                 var removedRoles = userRoles.Except(roles);
-                userManager.AddToRolesAsync(currentUser, addedRoles).Wait();
-                userManager.RemoveFromRolesAsync(currentUser, removedRoles).Wait();
+                await userManager.AddToRolesAsync(currentUser, addedRoles);
+                await userManager.RemoveFromRolesAsync(currentUser, removedRoles);
                 return RedirectToAction(nameof(Index));
             }
             return NotFound();
         }
 
-        public IActionResult Delete(string login)
+        public async Task<ActionResult> DeleteAsync(string login)
         {
-            var user = userManager.FindByEmailAsync(login).Result;
+            var user = await userManager.FindByEmailAsync(login);
             if (user != null)
             {
-                userManager.DeleteAsync(user).Wait();
-                identityContext.SaveChanges();
+                await userManager.DeleteAsync(user);
+                await identityContext.SaveChangesAsync();
             }
             return RedirectToAction(nameof(Index));
         }

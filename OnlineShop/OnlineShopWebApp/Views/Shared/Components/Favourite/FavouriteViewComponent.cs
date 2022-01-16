@@ -25,7 +25,7 @@ namespace OnlineShopWebApp.Views.Shared.Components.Favourite
         public async Task<IViewComponentResult> InvokeAsync(Guid productId)
         {
             string userId = null;
-            var user = userManager.GetUserAsync(HttpContext.User).Result;
+            var user = await userManager.GetUserAsync(HttpContext.User);
             userId = user != null ? user.Id : Request.Cookies["Id"];
 
             var favourite = await favouritesRepository.TryGetFavoriteProductsListByUserIdAsync(userId);
