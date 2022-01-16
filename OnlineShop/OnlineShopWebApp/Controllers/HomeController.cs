@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Db;
 using OnlineShopWebApp.Helpers;
+using System.Threading.Tasks;
 
 namespace OnlineShopWebApp.Controllers
 {
@@ -13,10 +14,11 @@ namespace OnlineShopWebApp.Controllers
             this.shop = shop;           
         }
 
-        public IActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            var productViewModels = shop.GetAll().ToProductViewModels();
-            return View(productViewModels);
+            var products = await shop.GetAllAsync();
+            
+            return View(products.ToProductViewModels());
         }
     }
 }

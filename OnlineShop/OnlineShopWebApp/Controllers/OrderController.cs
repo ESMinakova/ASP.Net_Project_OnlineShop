@@ -5,6 +5,7 @@ using OnlineShop.Db.Models;
 using OnlineShopWebApp.Helpers;
 using OnlineShopWebApp.Models;
 using System;
+using System.Threading.Tasks;
 
 namespace OnlineShopWebApp.Controllers
 {
@@ -26,18 +27,17 @@ namespace OnlineShopWebApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult SuccessfulOrder(UserDeliveryInfoViewModel userInfo)
+        public async Task<ActionResult> SuccessfulOrderAsync(UserDeliveryInfoViewModel userInfo)
         {
             if (ModelState.IsValid)
             {
 
-                var cart = cartsRepository.TryGetCartByUserId(Constants.UserId);
-                var order = new OrderWithContactsViewModel { UserDeliveryInfo = userInfo, OrderTime = DateTime.Now, Cart = cart.ToCartViewModel() };
-                //Прикрутить добавление адресной информации к User, когда будет функционировать БД юзеров и можно будет избавиться от Constants.UserId и пользоваться нормальными Guid Id                
+                var cart = await cartsRepository.TryGetCartByUserIdAsync(Constants.UserId);
+                var order = new OrderWithContactsViewModel { UserDeliveryInfo = userInfo, OrderTime = DateTime.Now, Cart = cart.ToCartViewModel() };                
                 var dbOrder = order.ToOrderWithContacts();
                 dbOrder.Cart = cartsRepository.Clone(cart);                
-                orderRepository.Add(dbOrder);
-                cartsRepository.Clear(Constants.UserId);
+                await orderRepository.AddAsync(dbOrder);
+                await cartsRepository.ClearAsync(Constants.UserId);
                 return View();
             }
             return RedirectToAction("Index");

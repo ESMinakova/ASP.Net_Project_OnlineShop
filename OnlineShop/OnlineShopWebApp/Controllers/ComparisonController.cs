@@ -6,6 +6,7 @@ using OnlineShop.Db;
 using OnlineShop.Db.Models;
 using OnlineShopWebApp.Helpers;
 using System;
+using System.Threading.Tasks;
 
 namespace OnlineShopWebApp.Controllers
 {    
@@ -21,7 +22,8 @@ namespace OnlineShopWebApp.Controllers
             this.shop = shop;
             this.userManager = userManager;
         }
-        public IActionResult Index()
+
+        public async Task<ActionResult> Index()
         {
             var user = userManager.GetUserAsync(HttpContext.User).Result;
             var comparison = new Comparison();
@@ -35,17 +37,17 @@ namespace OnlineShopWebApp.Controllers
                     cookieOptions.Expires = DateTime.Now.AddDays(30);
                     Response.Cookies.Append("id", userId, cookieOptions);
                 }
-                comparison = comparisonRepository.TryGetComparisonByUserId(userId);
+                comparison = await comparisonRepository.TryGetComparisonByUserIdAsync(userId);
             }
             else
-                comparison = comparisonRepository.TryGetComparisonByUserId(user.Id);
+                comparison = await comparisonRepository .TryGetComparisonByUserIdAsync(user.Id);
             var comparisonViewModel = comparison.ToComparisonViewModel();
             return View(comparisonViewModel);
         }
 
-        public IActionResult Add(Guid productId)
+        public async Task<ActionResult> AddAsync(Guid productId)
         {
-            var currentProduct = shop.TryGetProduct(productId);
+            var currentProduct = await shop.TryGetProductAsync(productId);
             var user = userManager.GetUserAsync(HttpContext.User).Result;
             if (user == null)
             {
@@ -57,25 +59,25 @@ namespace OnlineShopWebApp.Controllers
                     cookieOptions.Expires = DateTime.Now.AddDays(30);
                     Response.Cookies.Append("id", userId, cookieOptions);
                 }
-                comparisonRepository.Add(currentProduct, userId);
+                await comparisonRepository .AddAsync(currentProduct, userId);
             }
             else
-                comparisonRepository.Add(currentProduct, user.Id);
+                await comparisonRepository .AddAsync(currentProduct, user.Id);
             return RedirectToAction("Index");
 
 
         }
-        public IActionResult Delete(Guid productId)
+        public async Task<ActionResult> DeleteAsync(Guid productId)
         {
-            var currentProduct = shop.TryGetProduct(productId);
+            var currentProduct = await shop.TryGetProductAsync(productId);
             var user = userManager.GetUserAsync(HttpContext.User).Result;
             if (user == null)
             {
                 var userId = Request.Cookies["Id"];
-                comparisonRepository.Delete(currentProduct.Id, userId);
+                await comparisonRepository .DeleteAsync(currentProduct.Id, userId);
             }
             else
-                comparisonRepository.Delete(currentProduct.Id, user.Id);
+                await comparisonRepository .DeleteAsync(currentProduct.Id, user.Id);
             return RedirectToAction("Index");
         }
     }

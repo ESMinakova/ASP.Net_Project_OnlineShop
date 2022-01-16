@@ -3,6 +3,7 @@ using OnlineShop.Db.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace OnlineShop.Db
 {
@@ -15,47 +16,47 @@ namespace OnlineShop.Db
             this.databaseContext = databaseContext;
         }       
 
-        public Product TryGetProduct(Guid productId) 
+        public async Task<Product> TryGetProductAsync(Guid productId) 
         {
-            return databaseContext.Products.Include(x => x.Images).FirstOrDefault(x => x.Id == productId);
+            return await databaseContext.Products.Include(x => x.Images).FirstOrDefaultAsync(x => x.Id == productId);
         }
 
-        public List<Product> TryGetProducts(string request)
+        public async Task<List<Product>> TryGetProductsAsync(string request)
         {
-            return databaseContext.Products.Where(x => x.Name.ToLower().Contains(request.ToLower())).ToList();
+            return await databaseContext.Products.Where(x => x.Name.ToLower().Contains(request.ToLower())).ToListAsync();
         }
 
-        public List<Product> TryGetProductsByCategory(Category category)
+        public async Task<List<Product>> TryGetProductsByCategoryAsync(Category category)
         {
-            return databaseContext.Products.Where(x => x.Category == category).ToList();
+            return await databaseContext.Products.Where(x => x.Category == category).ToListAsync();
         }
 
-        public void Add(Product product)
+        public async Task AddAsync(Product product)
         {            
             databaseContext.Products.Add(product);
-            databaseContext.SaveChanges();
+            await databaseContext.SaveChangesAsync();
         }
 
-        public List<Product> GetAll()
+        public async Task<List<Product>> GetAllAsync()
         {
-            return databaseContext.Products.Include(x => x.Images).ToList();
+            return await databaseContext.Products.Include(x => x.Images).ToListAsync<Product>();
         }
 
-        public void Edit(Guid productId, Product product)
+        public async Task EditAsync(Guid productId, Product product)
         {
-            var currentProduct = TryGetProduct(productId);
+            var currentProduct = await TryGetProductAsync(productId);
             currentProduct.Name = product.Name;
             currentProduct.Cost = product.Cost;
             currentProduct.Description = product.Description;
             currentProduct.Category = product.Category;
             currentProduct.Images = product.Images;
-            databaseContext.SaveChanges();
+            await databaseContext.SaveChangesAsync();
         }
 
-        public void Remove(Product product)       
+        public async Task RemoveAsync(Product product)       
         {            
             databaseContext.Products.Remove(product);
-            databaseContext.SaveChanges();
+            await databaseContext.SaveChangesAsync();
         }
     }
 }

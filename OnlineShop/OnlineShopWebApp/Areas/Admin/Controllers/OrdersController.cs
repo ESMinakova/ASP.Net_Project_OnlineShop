@@ -5,7 +5,7 @@ using OnlineShop.Db.Models;
 using OnlineShopWebApp.Helpers;
 using OnlineShopWebApp.Models;
 using System;
-
+using System.Threading.Tasks;
 
 namespace OnlineShopWebApp.Areas.Admin.Controllers
 {
@@ -19,25 +19,25 @@ namespace OnlineShopWebApp.Areas.Admin.Controllers
         {
             this.orderRepository = orderRepository;
         }
-        public IActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            var dBOrders = orderRepository.GetAll();
+            var dBOrders = await orderRepository.GetAllAsync();
             var orders = dBOrders.ToOrderWithContactsViewModels();
             return View(orders);
         }
 
-        public IActionResult OrderDetails(Guid orderId)
+        public async Task<ActionResult> OrderDetailsAsync(Guid orderId)
         {
-            var dBOrder = orderRepository.TryGetOrderById(orderId);
+            var dBOrder = await orderRepository.TryGetOrderByIdAsync(orderId);
             var viewModelOrder = dBOrder.ToOrderWithContactsViewModel();
             return View(viewModelOrder);
         }
 
         [HttpPost]
-        public IActionResult SelectStatus(Guid orderId, OrderStatusViewModel status)
+        public async Task<ActionResult> SelectStatusAsync(Guid orderId, OrderStatusViewModel status)
         {
             var newStatus = (OrderStatus)Enum.Parse(typeof(OrderStatus), status.ToString(), true);
-            orderRepository.SelectStatus(orderId, newStatus);
+            await orderRepository.SelectStatusAsync(orderId, newStatus);
             return RedirectToAction(nameof(Index));
         }
     }

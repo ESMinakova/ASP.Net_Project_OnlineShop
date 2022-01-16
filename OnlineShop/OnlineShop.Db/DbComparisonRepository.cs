@@ -3,6 +3,7 @@ using OnlineShop.Db.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace OnlineShop.Db
 {
@@ -15,14 +16,14 @@ namespace OnlineShop.Db
             this.databaseContext = databaseContext;
         }
 
-        public Comparison TryGetComparisonByUserId(string userId)
+        public async Task<Comparison> TryGetComparisonByUserIdAsync(string userId)
         {
-            return databaseContext.Comparisons.Include(x => x.ProductsToCompare).FirstOrDefault(x => x.UserId == userId);
+            return await databaseContext.Comparisons.Include(x => x.ProductsToCompare).FirstOrDefaultAsync(x => x.UserId == userId);
         }
 
-        public void Add(Product product, string userId)
+        public async Task AddAsync(Product product, string userId)
         {
-            var comparison = TryGetComparisonByUserId(userId);
+            var comparison = await TryGetComparisonByUserIdAsync(userId);
             if (comparison == null)
             {
                 comparison = new Comparison() { ProductsToCompare = new List<Product>(), UserId = userId };
@@ -38,16 +39,16 @@ namespace OnlineShop.Db
                     product.Comparisons.Add(comparison);
                 }
             }
-            databaseContext.SaveChanges();
+            await databaseContext.SaveChangesAsync();
         }
 
-        public void Delete(Guid productId, string userId)
+        public async Task DeleteAsync(Guid productId, string userId)
         {
-            var comparison = TryGetComparisonByUserId(userId);
+            var comparison = await TryGetComparisonByUserIdAsync(userId);
             var productToDelete = comparison.ProductsToCompare.FirstOrDefault(x => x.Id == productId);
             productToDelete.Comparisons.Remove(comparison);
             comparison.ProductsToCompare.Remove(productToDelete);
-            databaseContext.SaveChanges();
+            await databaseContext.SaveChangesAsync();
         }
 
         public Comparison Clone(Comparison comparison)
@@ -55,12 +56,12 @@ namespace OnlineShop.Db
             return new Comparison { UserId = comparison?.UserId, ProductsToCompare = (comparison?.ProductsToCompare.Select(x => x).ToList()) };
         }
 
-        public void MoveDataToAuthorizedUser(User user, Comparison comparison)
+        public async Task MoveDataToAuthorizedUserAsync(User user, Comparison comparison)
         {
             if (comparison != null)
             {
                 var newComparison = Clone(comparison);
-                var oldComparison = TryGetComparisonByUserId(user.Id);
+                var oldComparison = await TryGetComparisonByUserIdAsync(user.Id);
                 if (oldComparison != null)
                     oldComparison.ProductsToCompare = oldComparison.ProductsToCompare.Concat(newComparison.ProductsToCompare).Distinct().ToList();
                 else
@@ -68,7 +69,7 @@ namespace OnlineShop.Db
                     newComparison.UserId = user.Id;
                     databaseContext.Comparisons.Add(newComparison);
                 }
-                databaseContext.SaveChanges();
+                await databaseContext.SaveChangesAsync();
             }
         }
     }

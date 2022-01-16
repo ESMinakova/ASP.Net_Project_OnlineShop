@@ -7,6 +7,7 @@ using OnlineShop.Db.Models;
 using OnlineShopWebApp.Helpers;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace OnlineShopWebApp.Controllers
 {
@@ -22,7 +23,7 @@ namespace OnlineShopWebApp.Controllers
             this.shop = shop;
             this.userManager = userManager;
         }
-        public IActionResult Index()
+        public async Task<ActionResult> Index()
         {
             var user = userManager.GetUserAsync(HttpContext.User).Result;
             var cart = new Cart();
@@ -36,17 +37,17 @@ namespace OnlineShopWebApp.Controllers
                     cookieOptions.Expires = DateTime.Now.AddDays(30);
                     Response.Cookies.Append("id", userId, cookieOptions);
                 }                
-                cart = cartsRepository.TryGetCartByUserId(userId);
+                cart = await cartsRepository.TryGetCartByUserIdAsync(userId);
             }
             else
-                cart = cartsRepository.TryGetCartByUserId(user.Id);
+                cart = await cartsRepository.TryGetCartByUserIdAsync(user.Id);
             var cartViewModel = cart.ToCartViewModel();
             return View(cartViewModel);
         }
 
-        public IActionResult Add(Guid productId)
+        public async Task<ActionResult> AddAsync(Guid productId)
         {
-            var currentProduct = shop.TryGetProduct(productId);
+            var currentProduct = await shop.TryGetProductAsync(productId);
             var user = userManager.GetUserAsync(HttpContext.User).Result;
             if (user == null)
             {
@@ -58,25 +59,25 @@ namespace OnlineShopWebApp.Controllers
                     cookieOptions.Expires = DateTime.Now.AddDays(30);
                     Response.Cookies.Append("id", userId, cookieOptions);
                 }
-                cartsRepository.Add(currentProduct, userId);
+                await cartsRepository.AddAsync(currentProduct, userId);
             }
             else
-                cartsRepository.Add(currentProduct, user.Id);
+                await cartsRepository.AddAsync(currentProduct, user.Id);
             
             return RedirectToAction("Index");
         }
 
-        public IActionResult Delete(Guid productId)
+        public async Task<ActionResult> DeleteAsync(Guid productId)
         {
-            var currentProduct = shop.TryGetProduct(productId);
+            var currentProduct = await shop.TryGetProductAsync(productId);
             var user = userManager.GetUserAsync(HttpContext.User).Result;
             if (user == null)
             {
                 var userId = Request.Cookies["Id"];
-                cartsRepository.Delete(currentProduct.Id, userId);
+                await cartsRepository.DeleteAsync(currentProduct.Id, userId);
             }
             else
-                cartsRepository.Delete(currentProduct.Id, user.Id);
+                await cartsRepository .DeleteAsync(currentProduct.Id, user.Id);
             return RedirectToAction("Index");
         }
         public IActionResult Clear()
@@ -85,10 +86,10 @@ namespace OnlineShopWebApp.Controllers
             if (user == null)
             {
                 var userId = Request.Cookies["Id"];
-                cartsRepository.Clear(userId);
+                cartsRepository.ClearAsync(userId);
             }
             else
-                cartsRepository.Clear(user.Id);
+                cartsRepository.ClearAsync(user.Id);
             return RedirectToAction("Index");
         }
 

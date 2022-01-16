@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Db;
 using OnlineShop.Db.Models;
 using OnlineShopWebApp.Helpers;
+using System.Threading.Tasks;
 
 namespace OnlineShopWebApp.Views.Shared.Components.CartForOrder
 {
@@ -17,12 +18,12 @@ namespace OnlineShopWebApp.Views.Shared.Components.CartForOrder
             this.userManager = userManager;
         }
 
-        public IViewComponentResult Invoke()
+        public async Task<IViewComponentResult> InvokeAsync()
         {
             var user = userManager.FindByEmailAsync(User.Identity.Name).Result;
             var cart = new Cart();
             if (user != null)
-                cart = cartsRepository.TryGetCartByUserId(user.Id);            
+                cart = await cartsRepository.TryGetCartByUserIdAsync(user.Id);            
             return View("CartForOrder", cart.ToCartViewModel());
         }
     }

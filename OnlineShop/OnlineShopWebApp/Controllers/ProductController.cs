@@ -2,6 +2,7 @@
 using OnlineShop.Db;
 using System;
 using OnlineShopWebApp.Helpers;
+using System.Threading.Tasks;
 
 namespace OnlineShopWebApp.Controllers
 {
@@ -13,16 +14,16 @@ namespace OnlineShopWebApp.Controllers
             this.shop = shop;
         }
 
-        public IActionResult Index(Guid productId)
+        public async Task<ActionResult> Index(Guid productId)
         {                    
-            var currentProduct = shop.TryGetProduct(productId);             
+            var currentProduct = await shop.TryGetProductAsync(productId);             
             return View(currentProduct.ToProductViewModel());            
         }
 
         [HttpPost]
-        public IActionResult Search(string request)
+        public async Task<ActionResult> SearchAsync(string request)
         {
-            var results = shop.TryGetProducts(request);
+            var results = await shop.TryGetProductsAsync(request);
             return View(results.ToProductViewModels());
         }
     }

@@ -3,6 +3,7 @@ using OnlineShop.Db.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace OnlineShop.Db
 {
@@ -14,30 +15,31 @@ namespace OnlineShop.Db
         {
             this.databaseContext = databaseContext;
         }
-        public void Add(OrderWithContacts order)
+
+        public async Task AddAsync(OrderWithContacts order)
         {
             databaseContext.Orders.Add(order);          
-            databaseContext.SaveChanges();
+            await databaseContext.SaveChangesAsync();
         }
 
-        public OrderWithContacts TryGetOrderById(Guid orderId)
+        public async Task<OrderWithContacts> TryGetOrderByIdAsync(Guid orderId)
         {
-            return databaseContext.Orders.Include(x => x.UserDeliveryInfo).Include(x => x.Cart).ThenInclude(x => x.Items)
-                .ThenInclude(x => x.Product).FirstOrDefault(x => x.Id == orderId);
+            return await databaseContext.Orders.Include(x => x.UserDeliveryInfo).Include(x => x.Cart).ThenInclude(x => x.Items)
+                .ThenInclude(x => x.Product).FirstOrDefaultAsync(x => x.Id == orderId);
         }
 
-        public void SelectStatus(Guid orderId, OrderStatus newStatus)
+        public async Task SelectStatusAsync(Guid orderId, OrderStatus newStatus)
         {
-            var currentOrder = TryGetOrderById(orderId);
+            var currentOrder = await TryGetOrderByIdAsync(orderId);
             if (currentOrder != null)
                 currentOrder.Status = newStatus;
-            databaseContext.SaveChanges();
+            await databaseContext.SaveChangesAsync();
         }
 
-        public List<OrderWithContacts> GetAll()
+        public async Task<List<OrderWithContacts>> GetAllAsync()
         {
-            return databaseContext.Orders.Include(x => x.UserDeliveryInfo).Include(x => x.Cart).ThenInclude(x => x.Items)
-                .ThenInclude(x => x.Product).ToList();
+            return await databaseContext .Orders.Include(x => x.UserDeliveryInfo).Include(x => x.Cart).ThenInclude(x => x.Items)
+                .ThenInclude(x => x.Product).ToListAsync();
         }
     }
 }

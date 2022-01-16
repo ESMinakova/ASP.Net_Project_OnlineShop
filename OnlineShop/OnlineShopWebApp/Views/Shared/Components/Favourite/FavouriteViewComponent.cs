@@ -4,6 +4,7 @@ using OnlineShop.Db;
 using OnlineShop.Db.Models;
 using OnlineShopWebApp.Helpers;
 using System;
+using System.Threading.Tasks;
 
 namespace OnlineShopWebApp.Views.Shared.Components.Favourite
 {
@@ -21,14 +22,14 @@ namespace OnlineShopWebApp.Views.Shared.Components.Favourite
             this.userManager = userManager;
         }
 
-        public IViewComponentResult Invoke(Guid productId)
+        public async Task<IViewComponentResult> InvokeAsync(Guid productId)
         {
             string userId = null;
             var user = userManager.GetUserAsync(HttpContext.User).Result;
             userId = user != null ? user.Id : Request.Cookies["Id"];
 
-            var favourite = favouritesRepository.TryGetFavoriteProductsListByUserId(userId);
-            var currentProduct = shop.TryGetProduct(productId);
+            var favourite = await favouritesRepository.TryGetFavoriteProductsListByUserIdAsync(userId);
+            var currentProduct = await shop.TryGetProductAsync(productId);
             bool IsFavorite = false;
             (ProductViewModel, bool) isProductFavourite = (currentProduct.ToProductViewModel(), IsFavorite);
             if (favourite != null && favourite.FavouriteProducts.Contains(currentProduct))

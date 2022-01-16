@@ -1,25 +1,26 @@
 ﻿using OnlineShop.Db.Models;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace OnlineShop.Db
 {
     public interface IShop
-    {       
+    {
 
-        Product TryGetProduct(Guid productId);
+        Task<Product> TryGetProductAsync(Guid productId);
 
-        List<Product> TryGetProducts(string request);        
+        Task<List<Product>> TryGetProductsAsync(string request);
 
-        List<Product> TryGetProductsByCategory(Category category);
+        Task<List<Product>> TryGetProductsByCategoryAsync(Category category);
 
-        void Add(Product product);
+        Task AddAsync(Product product);
 
-        void Remove(Product product);
+        Task RemoveAsync(Product product);
 
-        List<Product> GetAll();
+        Task<List<Product>> GetAllAsync();
 
-        void Edit(Guid productId, Product product);
+        Task EditAsync(Guid productId, Product product);
 
     }
 }

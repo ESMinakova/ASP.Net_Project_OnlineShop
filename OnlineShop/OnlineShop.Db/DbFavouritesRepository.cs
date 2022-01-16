@@ -3,6 +3,7 @@ using OnlineShop.Db.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace OnlineShop.Db
 {
@@ -15,15 +16,14 @@ namespace OnlineShop.Db
             this.databaseContext = databaseContext;
         }
 
-        public Favourite TryGetFavoriteProductsListByUserId(string userId)
-        {
-            var favourite = databaseContext.Favourites.Include(x => x.FavouriteProducts).FirstOrDefault(x => x.UserId == userId);
-            return favourite;
+        public async Task<Favourite> TryGetFavoriteProductsListByUserIdAsync(string userId)
+        {            
+            return await databaseContext.Favourites.Include(x => x.FavouriteProducts).FirstOrDefaultAsync(x => x.UserId == userId);
         }
 
-        public void Add(Product product, string userId)
+        public async Task AddAsync(Product product, string userId)
         {
-            var existingFavourites = TryGetFavoriteProductsListByUserId(userId);
+            var existingFavourites = await TryGetFavoriteProductsListByUserIdAsync(userId);
             if (existingFavourites == null)
             {
                 var favourites = new Favourite() { UserId = userId, FavouriteProducts = new List<Product> { product } };
@@ -38,25 +38,25 @@ namespace OnlineShop.Db
                     product.Favourites.Add(existingFavourites);
                 }      
             }
-            databaseContext.SaveChanges();
+            await databaseContext.SaveChangesAsync();
         }
 
-        public void Delete(Guid productId, string userId)
+        public async Task DeleteAsync(Guid productId, string userId)
         {
-            var existingFavourites = TryGetFavoriteProductsListByUserId(userId);
+            var existingFavourites = await TryGetFavoriteProductsListByUserIdAsync(userId);
             var productToDelete = existingFavourites.FavouriteProducts.FirstOrDefault(x => x.Id == productId);
             existingFavourites.FavouriteProducts.Remove(productToDelete);
             productToDelete.Favourites.Remove(existingFavourites);
-            databaseContext.SaveChanges();
+            await databaseContext.SaveChangesAsync();
         }
 
-        public void AddOrDelete(Product product, string userId)
+        public async Task AddOrDeleteAsync(Product product, string userId)
         {
-            var existingFavourites = TryGetFavoriteProductsListByUserId(userId);
+            var existingFavourites = await TryGetFavoriteProductsListByUserIdAsync(userId);
             if (existingFavourites == null || !existingFavourites.FavouriteProducts.Contains(product))
-                Add(product, userId);
+                await AddAsync(product, userId);
             else
-                Delete(product.Id, userId);            
+                await DeleteAsync(product.Id, userId);            
         }
 
         public Favourite Clone(Favourite favourite)
@@ -64,12 +64,12 @@ namespace OnlineShop.Db
             return new Favourite { UserId = favourite?.UserId, FavouriteProducts = (favourite?.FavouriteProducts.Select(x => x).ToList()) };
         }
 
-        public void MoveDataToAuthorizedUser(User user, Favourite favourite)
+        public async Task MoveDataToAuthorizedUserAsync(User user, Favourite favourite)
         {
             if (favourite != null)
             {
                 var newFavourite = Clone(favourite);
-                var oldFavourite = TryGetFavoriteProductsListByUserId(user.Id);
+                var oldFavourite = await TryGetFavoriteProductsListByUserIdAsync(user.Id);
                 if (oldFavourite != null)
                     oldFavourite.FavouriteProducts = oldFavourite.FavouriteProducts.Concat(newFavourite.FavouriteProducts).Distinct().ToList();  
                 else
@@ -77,7 +77,7 @@ namespace OnlineShop.Db
                     newFavourite.UserId = user.Id;
                     databaseContext.Favourites.Add(newFavourite);
                 }
-                databaseContext.SaveChanges();
+                await databaseContext.SaveChangesAsync();
             }
         }
     }

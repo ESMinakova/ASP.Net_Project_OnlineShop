@@ -3,6 +3,7 @@ using OnlineShop.Db;
 using OnlineShop.Db.Models;
 using OnlineShopWebApp.Areas.Catalogue.Models;
 using OnlineShopWebApp.Helpers;
+using System.Threading.Tasks;
 
 namespace OnlineShopWebApp.Areas.Catalogue.Controllers
 {
@@ -14,10 +15,10 @@ namespace OnlineShopWebApp.Areas.Catalogue.Controllers
         {
             this.shop = shop;
         }
-        public IActionResult Index()
+        public async Task<ActionResult> Index()
         {
             var category = Category.SideDish;
-            var products = shop.TryGetProductsByCategory(category);
+            var products = await shop.TryGetProductsByCategoryAsync(category);
             var productsToView = products.ToProductViewModels();
             return View(productsToView);
         }

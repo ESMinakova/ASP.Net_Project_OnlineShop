@@ -6,6 +6,7 @@ using OnlineShopWebApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace OnlineShopWebApp.Helpers
 {
@@ -23,6 +24,8 @@ namespace OnlineShopWebApp.Helpers
                 Category = (CategoryViewModel)Enum.Parse(typeof(CategoryViewModel), product.Category.ToString(), true)
             };
         }
+
+
         public static Product ToProduct(this ProductViewModel product, List<string> imagesPaths)
         {
             var newProduct = new Product
@@ -47,6 +50,7 @@ namespace OnlineShopWebApp.Helpers
                 return products.Select(x => ToProductViewModel(x)).ToList();
             return null;
         }
+
 
         public static CartViewModel ToCartViewModel(this Cart cart)
         {
