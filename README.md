@@ -4,4 +4,4 @@
 - составления и обработки заказа пользователя.
 - добавление, обновление, удаление, хранение данных в базах данных.
   
-Использованные языки и технологии: C#, ASP.NET Core (MVC), Entity Framework, Bootstrap.
+Использованные языки и технологии: C#, ASP.NET Core (MVC), Entity Framework, Dependency Injection, Bootstrap.
