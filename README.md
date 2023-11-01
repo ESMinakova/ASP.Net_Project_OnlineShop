@@ -12,6 +12,7 @@
 ## Использованные языки и технологии: 
 - C#
 - ASP.NET Core (MVC)
+- ООП
 - Entity Framework
 - Dependency Injection
 - LINQ
