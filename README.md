@@ -18,3 +18,4 @@
 - LINQ
 - Razor Pages
 - Bootstrap
+- Асинхронное программирование
